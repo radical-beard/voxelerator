@@ -34,6 +34,11 @@ public static class Ui
     public const int RadiusL = 10, Radius = 8, RadiusS = 6;
     public const int Gap = 8, GapL = 16, GapS = 4;
 
+    /// Display backing scale (2 on Retina), set once by AppHost at boot.
+    /// All Control layout stays in logical units; the window's
+    /// ContentScaleFactor does the multiplication.
+    public static float DisplayScale = 1f;
+
     // ---- theme -------------------------------------------------------------
 
     public static Theme Build()

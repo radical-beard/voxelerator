@@ -23,8 +23,23 @@ public partial class AppHost : Node
     public override void _Ready()
     {
         Instance = this;
-        GetWindow().Title = "Voxelerator";
-        GetWindow().MinSize = new Vector2I(1100, 700);
+        var win = GetWindow();
+        win.Title = "Voxelerator";
+
+        // HiDPI: Godot windows are sized in physical pixels and canvas items
+        // render 1:1, so on a Retina display everything comes up half-size
+        // and unreadable. Scale the content AND the window by the backing
+        // scale; embedded dialogs/popups inherit the canvas scale.
+        float scale = Mathf.Clamp((float)DisplayServer.ScreenGetScale(), 1f, 3f);
+        Ui.Ui.DisplayScale = scale;
+        if (scale > 1.01f)
+        {
+            win.ContentScaleFactor = scale;
+            win.Size = new Vector2I((int)(1440 * scale), (int)(900 * scale));
+            win.MoveToCenter();
+        }
+        win.MinSize = new Vector2I((int)(1100 * scale), (int)(700 * scale));
+
         Registry.SeedBuiltinPalettes();
 
         var bg = new ColorRect { Color = Ui.Ui.Bg0, MouseFilter = Control.MouseFilterEnum.Ignore };

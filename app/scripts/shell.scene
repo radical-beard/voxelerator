@@ -1,0 +1,37 @@
+# Voxelerator — status shell. Floats over every screen; never eats input.
+description = "Voxelerator status strip"
+
+[nodes.Shell]
+type = "CanvasLayer"
+
+[nodes.Shell.Root]
+type = "MarginContainer"
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+"theme_override_constants/margin_left" = 14
+"theme_override_constants/margin_top" = 8
+"theme_override_constants/margin_right" = 14
+"theme_override_constants/margin_bottom" = 6
+
+[nodes.Shell.Root.Col]
+type = "VBoxContainer"
+mouse_filter = 2
+
+[nodes.Shell.Root.Col.Spacer]
+type = "Control"
+size_flags_vertical = 3
+mouse_filter = 2
+
+[nodes.Shell.Root.Col.Hint]
+type = "Label"
+mouse_filter = 2
+"theme_override_font_sizes/font_size" = 11
+behaviors = ["hint.behavior.evt"]
+
+[nodes.Shell.Root.Col.Status]
+type = "Label"
+mouse_filter = 2
+"theme_override_font_sizes/font_size" = 12
+behaviors = ["status.behavior.evt"]

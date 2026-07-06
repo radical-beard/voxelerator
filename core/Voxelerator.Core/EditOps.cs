@@ -251,6 +251,44 @@ public static class EditOps
         for (int i = 0; i < v.Length; i++) if (v[i] == from) v[i] = to;
     }
 
+    /// Remove palette slot `slot` (1-based): cells using it get `remapTo`
+    /// (0 = air, or any other pre-removal slot number), every higher slot
+    /// shifts down one, and the palette entry disappears. One atomic op so
+    /// model and palette can never disagree.
+    public static void RemovePaletteSlot(VoxelModel m, byte slot, byte remapTo)
+    {
+        if (slot < 1 || slot > m.Palette.Colors.Count) throw new ArgumentOutOfRangeException(nameof(slot));
+        if (remapTo == slot) throw new ArgumentException("cannot remap a slot to itself");
+        if (remapTo > m.Palette.Colors.Count) throw new ArgumentOutOfRangeException(nameof(remapTo));
+        m.Palette = m.Palette.Clone();                       // undo snapshots share the old instance
+        byte finalTarget = remapTo > slot ? (byte)(remapTo - 1) : remapTo;
+        var v = m.Voxels;
+        for (int i = 0; i < v.Length; i++)
+        {
+            if (v[i] == slot) v[i] = 255;                    // sentinel
+            else if (v[i] > slot && v[i] != 255) v[i]--;
+        }
+        for (int i = 0; i < v.Length; i++) if (v[i] == 255) v[i] = finalTarget;
+        m.Palette.Colors.RemoveAt(slot - 1);
+    }
+
+    /// Swap two palette slots (reorder): colors trade places and every cell
+    /// renumbers, so nothing changes visually.
+    public static void SwapPaletteSlots(VoxelModel m, byte a, byte b)
+    {
+        if (a == b) return;
+        if (a < 1 || b < 1 || a > m.Palette.Colors.Count || b > m.Palette.Colors.Count)
+            throw new ArgumentOutOfRangeException();
+        m.Palette = m.Palette.Clone();                       // undo snapshots share the old instance
+        (m.Palette.Colors[a - 1], m.Palette.Colors[b - 1]) = (m.Palette.Colors[b - 1], m.Palette.Colors[a - 1]);
+        var v = m.Voxels;
+        for (int i = 0; i < v.Length; i++)
+        {
+            if (v[i] == a) v[i] = b;
+            else if (v[i] == b) v[i] = a;
+        }
+    }
+
     public static void TranslateModel(VoxelModel m, int dx, int dy, int dz)
     {
         var snap = m.CloneVoxels();

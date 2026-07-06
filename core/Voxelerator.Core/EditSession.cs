@@ -27,6 +27,39 @@ public sealed class EditSession
         Version++;
     }
 
+    // ---- stroke batching: many Set() calls, one undo step -------------------
+
+    private VoxelModel? _batch;
+
+    /// Snapshot the model; mutate it freely until CommitBatch. Nested batches
+    /// are a bug, not a feature.
+    public void BeginBatch()
+    {
+        if (_batch is not null) throw new InvalidOperationException("batch already open");
+        _batch = Model.Clone();
+    }
+
+    /// Push the pre-batch snapshot as one undo step (dropped if nothing
+    /// actually changed).
+    public void CommitBatch()
+    {
+        if (_batch is null) return;
+        if (!_batch.Voxels.AsSpan().SequenceEqual(Model.Voxels))
+        {
+            Push(_batch);
+            Version++;
+        }
+        _batch = null;
+    }
+
+    /// Roll the model back to the pre-batch snapshot (e.g. a cancelled drag).
+    public void AbandonBatch()
+    {
+        if (_batch is null) return;
+        Model.RestoreVoxels(_batch.Voxels);
+        _batch = null;
+    }
+
     public void Swap(Func<VoxelModel, VoxelModel> produce)
     {
         var next = produce(Model);

@@ -1,0 +1,15 @@
+---
+apis:
+ - vox
+register:
+ - on_update
+---
+-- Bottom status strip; throttled to four refreshes a second.
+local acc = 0
+
+function on_update(dt)
+  acc = acc + dt
+  if acc < 0.25 then return end
+  acc = 0
+  self.text = vox.status()
+end

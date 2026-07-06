@@ -1,0 +1,2 @@
+# Voxelerator shell layer: a thin EvaLuate skin over the C# editor UI.
+start_scene = "shell"

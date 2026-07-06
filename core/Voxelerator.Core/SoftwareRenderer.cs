@@ -14,6 +14,8 @@ public sealed record RenderOptions
     public int? CutawayAboveLayer { get; init; }
     /// Null = transparent background.
     public Rgba? Background { get; init; }
+    /// Extra rotation of the eye around +y, in degrees — turntable frames.
+    public double YawDegrees { get; init; }
 }
 
 /// Headless z-buffer rasterizer over the greedy mesh — the render the MCP
@@ -68,6 +70,12 @@ public static class SoftwareRenderer
             RenderView.Side => (new V3d(1, 0.02, 0).Normalized(), new V3d(0, 1, 0)),
             _ => (new V3d(1, 0.85, 1).Normalized(), new V3d(0, 1, 0)),
         };
+        if (o.YawDegrees != 0 && o.View != RenderView.Top)
+        {
+            double a = o.YawDegrees * Math.PI / 180.0;
+            double ca = Math.Cos(a), sa = Math.Sin(a);
+            eyeDir = new V3d(eyeDir.X * ca + eyeDir.Z * sa, eyeDir.Y, -eyeDir.X * sa + eyeDir.Z * ca);
+        }
         double dist = radius * 2.6;
         var eye = center + eyeDir * dist;
 

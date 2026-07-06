@@ -1,0 +1,12 @@
+---
+scenes:
+ - shell
+apis:
+ - vox
+register:
+ - on_enter
+---
+-- Shell driver: the C# side owns the heavy UI; this layer is the live strip.
+function on_enter()
+  print("shell ready: " .. vox.version())
+end

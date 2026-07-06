@@ -1,0 +1,35 @@
+name: ci
+on:
+  push: { branches: [main] }
+  pull_request:
+
+jobs:
+  core-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with: { dotnet-version: "10.0.x" }
+      # The format is the contract: round-trip, byte-determinism, validation,
+      # mesher parity, edit ops, text grid, registry, software renderer.
+      - run: dotnet test core/Voxelerator.Core.Tests/Voxelerator.Core.Tests.csproj --nologo
+
+  aot-analyzers:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with: { dotnet-version: "10.0.x" }
+      # IsAotCompatible + TreatWarningsAsErrors: reflection creep fails here.
+      - run: dotnet build core/Voxelerator.Core/Voxelerator.Core.csproj -c Release --nologo
+      - run: dotnet build mcp/Voxelerator.Mcp/Voxelerator.Mcp.csproj -c Release --nologo
+
+  app-compiles:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with: { dotnet-version: "10.0.x" }
+      # Godot.NET.Sdk compiles headlessly from nuget — no engine install needed
+      # to keep the app assembly honest on every push.
+      - run: dotnet build app/Voxelerator.App.csproj --nologo

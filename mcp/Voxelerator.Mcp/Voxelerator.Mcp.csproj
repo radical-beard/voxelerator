@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Voxelerator.Mcp</RootNamespace>
+    <AssemblyName>voxelerator-mcp</AssemblyName>
+    <!-- Run on whatever modern runtime the host machine has. -->
+    <RollForward>LatestMajor</RollForward>
+    <!-- Hand-rolled minimal MCP over stdio: JSON-RPC 2.0, no SDK dependency,
+         so the protocol surface is fully ours and fully testable. -->
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../core/Voxelerator.Core/Voxelerator.Core.csproj" />
+  </ItemGroup>
+
+</Project>

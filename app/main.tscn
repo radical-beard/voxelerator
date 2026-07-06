@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://voxapphost0"]
+
+[ext_resource type="Script" path="res://AppHost.cs" id="1_apphost"]
+
+[node name="AppHost" type="Node"]
+script = ExtResource("1_apphost")

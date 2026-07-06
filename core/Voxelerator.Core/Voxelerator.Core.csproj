@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Voxelerator.Core</RootNamespace>
+    <!-- The format is the contract: zero third-party dependencies, AOT/trim
+         clean, deterministic output. Same discipline as NT's sim library. -->
+    <IsAotCompatible>true</IsAotCompatible>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+
+</Project>

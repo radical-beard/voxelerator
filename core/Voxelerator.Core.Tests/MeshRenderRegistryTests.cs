@@ -148,8 +148,9 @@ public class RendererTests
     }
 }
 
-/// Registry tests own the OverrideDataDir hook, so they all live in one class
-/// (xunit runs a class serially).
+/// Registry tests own the OverrideDataDir hook; everything touching it shares
+/// the "registry" collection so xunit never runs them in parallel.
+[Collection("registry")]
 public class RegistryTests : IDisposable
 {
     private readonly string _dir;
